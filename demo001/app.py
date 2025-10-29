@@ -17,6 +17,7 @@ FORM_TEMPLATE = """
 <html>
   <body>  
     <h1>Form con CapJS</h1>
+    <p>{{ message }}</p>
     <form action="/" method="post">
       <cap-widget 
         id="cap" 
@@ -29,7 +30,8 @@ FORM_TEMPLATE = """
     <script>
       window.CAP_CUSTOM_WASM_URL = "{{ capjs_public_url }}/assets/cap_wasm.js";
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script>
+    <script src="{{ url_for('static', filename='capjs-widget.min.js') }}"></script>
+    <!-- script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script -->
     <!-- <script src="{{ capjs_public_url }}/assets/widget.js"></script> -->
   </body>
 </html>
@@ -40,9 +42,13 @@ def form():
     if request.method == "POST":
         token = request.form.get("capjs-token")
         username = request.form.get("username")
+        message = ""
+        status_code = 200
 
         if not token:
-            return "Errore: token mancante", 400
+            # return "Errore: token mancante", 400
+            message = "Errore: token mancante"
+            status_code = 400
 
         resp = requests.post(
             f"{CAPJS_INTERNAL_URL}/verify",
@@ -51,14 +57,17 @@ def form():
         )
         result = resp.json()
         if result.get("success"):
-            return f"Captcha OK ✅, utente: {username}"
-        return f"Captcha NON valido ❌: {result}"
+            message = f"Captcha OK ✅, utente: {username}, token: {token}, captcha_result: {json.dumps(result)}"
+        else:
+            message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
+            status_code = 400
 
     return render_template_string(
       FORM_TEMPLATE, 
       capjs_public_url=CAPJS_PUBLIC_URL, 
       site_key=CAPJS_SITE_KEY,
-    )
+      message=message,
+    ), status_code
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
