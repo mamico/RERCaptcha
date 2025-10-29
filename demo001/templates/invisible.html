@@ -16,13 +16,20 @@
     <input type="text" class="form-control" id="text">
   </div>
   <input type="hidden" name="capjs-token" id="capjs-token">
-  <button type="submit" class="btn btn-primary">Submit</button>
+  <button disabled id="capjs-button" type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}
 {% block script %}
 <script>
   const cap = new Cap({ apiEndpoint: '{{ capjs_public_url }}/{{site_key}}/' });
-  const token = await cap.solve();
-  document.getElementById('capjs-token').value = token;
+  cap.solve().then( ({success, token}) => {
+    if (success) {
+      document.getElementById('capjs-token').value = token;
+      document.getElementById('capjs-button').attr('disabled', false);
+    }
+    else {
+      console.error('error solving captcha');
+    }
+  });
 </script>
 {% endblock %}
