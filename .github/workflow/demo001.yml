@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "demo001/**"
+      - ".github/workflow/demo001.yml"
   workflow_dispatch:
 
 defaults:
