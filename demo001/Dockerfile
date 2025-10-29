@@ -3,8 +3,7 @@ FROM python:3.11-slim
 #    build-essential curl \
 #    && rm -rf /var/lib/apt/lists/*
 WORKDIR /app
-RUN pip install --no-cache-dir flask requests
-COPY app.py /app/app.py
-COPY static/ /app/
+COPY . /app
+RUN pip install -r requirements.txt -c constraints.txt
 EXPOSE 5000
 CMD ["python", "app.py"]

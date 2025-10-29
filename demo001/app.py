@@ -32,7 +32,7 @@ FORM_TEMPLATE = """
     </script>
     <script src="{{ url_for('static', filename='capjs-widget.min.js') }}"></script>
     <!-- script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script -->
-    <!-- <script src="{{ capjs_public_url }}/assets/widget.js"></script> -->
+    <script src="{{ capjs_public_url }}/assets/widget.js"></script>
   </body>
 </html>
 """

@@ -3,3 +3,5 @@ var/*
 data/
 shared/
 uno.txt
+.venv/
+.python-version
