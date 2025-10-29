@@ -1,0 +1,41 @@
+services:
+  capjs:
+    build: capjs 
+    # restart: unless-stopped
+    user: "1000:1000"   # stesso utente dell'init
+    ports:
+      - "3000:3000"
+    volumes:
+      # monta directory locale dell’host per i dati sqlite
+      # - ./data:/usr/src/app/.data
+      - ./data:/data
+      # opzionale: montare config dall’host
+      # - ./etc/cap.config.js:/app/cap.config.js:ro
+    environment:
+      DATA_PATH: /data
+      # TODO: quuesto solo per demo, in produzione spostare su un secret/vault
+      ADMIN_KEY: your_secret_password_your_secret_password
+      ENABLE_ASSETS_SERVER: true
+      CORS_ORIGIN: "*"
+
+  demo:
+    build: ./demo
+    user: "1000:1000"
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./shared:/shared
+    depends_on:
+      - demo-init
+
+  demo-init:
+    build: ./demo-init
+    user: "1000:1000"
+    volumes:
+      - ./data:/data
+      - ./shared:/shared
+    restart: "no"
+    depends_on:
+      - capjs
+    # environment:
+    #   ADMIN_KEY: your_secret_password_your_secret_password
