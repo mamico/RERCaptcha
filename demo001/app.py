@@ -6,21 +6,11 @@ import time
 
 app = Flask(__name__)
 
-# Legge chiavi generate da capjs-init
-while True:
-   print("check for shared key")
-   if os.path.exists("/shared/keys.json"):
-       with open("/shared/keys.json") as f:
-           keys = json.load(f)
-       break
-   time.sleep(5)
-
 # spostare su env
-CAPJS_INTERNAL_URL = "http://capjs:3000"
-CAPJS_PUBLIC_URL = "http://localhost:3000"
-
-CAPJS_SITE_KEY = keys["siteKey"]
-CAPJS_SECRET = keys["secretKey"]
+CAPJS_INTERNAL_URL = os.environ.get("CAPJS_INTERNAL_URL", "http://capjs:3000")
+CAPJS_PUBLIC_URL = os.environ.get("CAPJS_PUBLIC_URL", "http://localhost:3000")
+CAPJS_SITE_KEY = os.environ.get("SITE_KEY")
+CAPJS_SECRET = os.environ.get("SECRET_KEY")
 
 FORM_TEMPLATE = """
 <!doctype html>
