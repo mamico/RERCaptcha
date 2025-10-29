@@ -29,7 +29,7 @@ jobs:
         uses: docker/metadata-action@v5
         with:
           images: |
-            ${{ inputs.image-name-prefix }}-${{ inputs.image-name-suffix }}
+            ghcr.io/${{ github.repository }}
           labels: |
             org.label-schema.docker.cmd=docker run -d -p 5000:5000 ${{ inputs.image-name-prefix }}-${{ inputs.image-name-suffix }}:${{ inputs.base-tag }}
           flavor:
