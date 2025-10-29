@@ -38,7 +38,7 @@ FORM_TEMPLATE = """
 """
 
 @app.route("/", methods=["GET", "POST"])
-def form():
+def testvisibleok():
     message = ""
     status_code = 200
     if request.method == "POST":
@@ -51,16 +51,21 @@ def form():
             status_code = 400
 
         resp = requests.post(
-            f"{CAPJS_INTERNAL_URL}/verify",
+            f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
             data={"secret": CAPJS_SECRET, "response": token},
             timeout=5
         )
-        result = resp.json()
-        if result.get("success"):
-            message = f"Captcha OK ✅, utente: {username}, token: {token}, captcha_result: {json.dumps(result)}"
+        if resp:
+            result = resp.json()
+            if result.get("success"):
+                message = f"Captcha OK ✅, utente: {username}, token: {token}, captcha_result: {json.dumps(result)}"
+                status_code = 200
+            else:
+                message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
+                status_code = 400
         else:
-            message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
-            status_code = 400
+            message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code} text: {res.text}"
+            status_code = res.status_code
 
     return render_template_string(
       FORM_TEMPLATE, 
