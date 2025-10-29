@@ -30,8 +30,6 @@ FORM_TEMPLATE = """
     <script>
       window.CAP_CUSTOM_WASM_URL = "{{ capjs_public_url }}/assets/cap_wasm.js";
     </script>
-    <script src="{{ url_for('static', filename='capjs-widget.min.js') }}"></script>
-    <!-- script src="https://cdn.jsdelivr.net/npm/@cap.js/widget"></script -->
     <script src="{{ capjs_public_url }}/assets/widget.js"></script>
   </body>
 </html>
@@ -50,13 +48,13 @@ def testvisibleok():
             message = "Errore: token mancante"
             status_code = 400
 
-        resp = requests.post(
+        res = requests.post(
             f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
             data={"secret": CAPJS_SECRET, "response": token},
             timeout=5
         )
-        if resp:
-            result = resp.json()
+        if res:
+            result = res.json()
             if result.get("success"):
                 message = f"Captcha OK ✅, utente: {username}, token: {token}, captcha_result: {json.dumps(result)}"
                 status_code = 200
