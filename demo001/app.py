@@ -39,10 +39,10 @@ FORM_TEMPLATE = """
 
 @app.route("/", methods=["GET", "POST"])
 def form():
+    message = ""
     if request.method == "POST":
         token = request.form.get("capjs-token")
         username = request.form.get("username")
-        message = ""
         status_code = 200
 
         if not token:
