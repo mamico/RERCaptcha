@@ -40,10 +40,10 @@ FORM_TEMPLATE = """
 @app.route("/", methods=["GET", "POST"])
 def form():
     message = ""
+    status_code = 200
     if request.method == "POST":
         token = request.form.get("capjs-token")
         username = request.form.get("username")
-        status_code = 200
 
         if not token:
             # return "Errore: token mancante", 400
