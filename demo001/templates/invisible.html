@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">RERCaptcha</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Invisbile</li>
+  </ol>
+</nav>
+<h2>Form con Captcha invisibile</h2>
+<hr>
+<p class="alert alert-light">{{ message }}</p>
+<form method="post">
+  <div class="mb-3">
+    <label for="text" class="form-label">Campo di testo</label>
+    <input type="text" class="form-control" id="text">
+  </div>
+  <input type="hidden" name="capjs-token" id="capjs-token">
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endblock %}
+{% block script %}
+<script>
+  const cap = new Cap({ apiEndpoint: '{{ capjs_public_url }}/{{site_key}}/' });
+  const token = await cap.solve();
+  document.getElementById('capjs-token').value = token;
+</script>
+{% endblock %}

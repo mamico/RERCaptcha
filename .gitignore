@@ -5,3 +5,4 @@ shared/
 uno.txt
 .venv/
 .python-version
+__pycache__/
