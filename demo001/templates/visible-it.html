@@ -11,11 +11,16 @@
 <hr>
 <p class="alert alert-light">{{ message }}</p>
 <form method="post">
-  <cap-widget id="cap" data-cap-api-endpoint="{{ capjs_public_url }}/{{site_key}}/"
-    data-cap-hidden-field-name="capjs-token" data-cap-i18n-verifying-label="Verifica in corso..."
-    data-cap-i18n-initial-state="Non sono un robot" data-cap-i18n-solved-label="Verificato"
+  <cap-widget 
+    id="cap" 
+    data-cap-api-endpoint="{{ capjs_public_url }}/{{site_key}}/"
+    data-cap-hidden-field-name="capjs-token"
+    data-cap-i18n-verifying-label="Verifica in corso..."
+    data-cap-i18n-initial-state="Non sono un robot"
+    data-cap-i18n-solved-label="Verificato"
     data-cap-i18n-error-label="Errore"
-    data-cap-i18n-wasm-disabled="Abilita WASM per una risoluzione molto più veloce"></cap-widget>
+    data-cap-i18n-wasm-disabled="Abilita WASM per una risoluzione molto più veloce"
+  ></cap-widget>
   <div class="mb-3">
     <label for="text" class="form-label">Campo di testo</label>
     <input type="text" class="form-control" id="text">
@@ -36,4 +41,38 @@
   </div>
 </div>
 </p>
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Codice di esempio (client side)</h5>
+    <pre class="alert alert-light">
+      <code>
+&lt;body&gt;
+  ...
+  &lt;form method="post"&gt;
+    &lt;cap-widget 
+      id="cap" 
+      data-cap-api-endpoint="https://captcha.regione.emr.it/abcdef1234/"
+      data-cap-hidden-field-name="capjs-token" 
+      data-cap-i18n-verifying-label="Verifica in corso..."
+      data-cap-i18n-initial-state="Non sono un robot"
+      data-cap-i18n-solved-label="Verificato"
+      data-cap-i18n-error-label="Errore"
+      data-cap-i18n-wasm-disabled="Abilita WASM per una risoluzione molto più veloce"
+    &gt;&lt;/cap-widget&gt;
+    &lt;div class="mb-3"&gt;
+      &lt;label for="text" class="form-label"&gt;Campo di testo&lt;/label&gt;
+      &lt;input type="text" class="form-control" id="text"&gt;
+    &lt;/div&gt;
+    &lt;button type="submit" class="btn btn-primary"&gt;Submit&lt;/button&gt;
+  &lt;/form&gt;
+  ...
+  &lt;script&gt;
+    window.CAP_CUSTOM_WASM_URL = "https://captcha.regione.emr.it/assets/cap_wasm.js";
+  &lt;/script&gt;
+  &lt;script src="https://captcha.regione.emr.it/assets/widget.js"&gt;&lt;/script&gt;
+&lt;/body&gt;
+      </code>
+    </pre>
+  </div>
+</div>
 {% endblock %}

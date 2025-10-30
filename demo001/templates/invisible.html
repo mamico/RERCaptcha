@@ -25,11 +25,11 @@
   cap.solve().then( ({success, token}) => {
     if (success) {
       document.getElementById('capjs-token').value = token;
-      document.getElementById('capjs-button').attr('disabled', false);
+      document.getElementById('capjs-button').disabled = false;
     }
     else {
       console.error('error solving captcha');
     }
-  });
+  }); 
 </script>
 {% endblock %}
