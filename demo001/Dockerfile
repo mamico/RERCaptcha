@@ -6,4 +6,5 @@ WORKDIR /app
 COPY . /app
 RUN pip install -r requirements.txt -c constraints.txt
 EXPOSE 5000
-CMD ["python", "app.py"]
+# CMD ["python", "app.py"]
+CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]

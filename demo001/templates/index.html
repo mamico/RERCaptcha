@@ -1,11 +1,25 @@
-
 {% extends 'base.html' %}
 
 {% block content %}
-       <h1><a href="/">RERCaptcha</a></h1>
+<div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+	<div class="feature col">
+		<div
+			class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+		</div>
+		<h3 class="fs-2 text-body-emphasis">Form protetto da Captcha visibile con label in italiano</h3>
+		<p></p>
+		<a href="/visible-it" class="icon-link">
+			Vai alla demo</a>
+	</div>
+	<div class="feature col">
+		<div
+			class="feature-icon d-inline-flex align-items-center justify-content-center text-bg-primary bg-gradient fs-2 mb-3">
+		</div>
+		<h3 class="fs-2 text-body-emphasis">Form protetto da Captcha invisibile</h3>
+		<p></p>
+		<a href="/invisible" class="icon-link">
+			Vai alla demo</a>
+	</div>
 
-<ul>
-	<li><a href="/visible-it">Form protetto da Captacha visibile con label in italiano</a></li>
-	<li><a href="/invisible">Form protetto da Captacha invisibile</a></li>
-</ul>
+</div>
 {% endblock %}
