@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login to Cap</title>
+  <link rel="icon" href="./public/logo-small.webp" />
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: InterVariable, -apple-system, BlinkMacSystemFont, Segoe UI,
+        Roboto, Oxygen-Sans, Ubuntu, Cantarell, Helvetica Neue, sans-serif;
+    }
+
+    body {
+      text-align: center;
+      margin: 0px;
+      padding: 0px;
+      margin-top: 14vh;
+      background-color: #161718;
+      color: #e8e8ea;
+    }
+
+    form {
+      max-width: 300px;
+      margin: 0px auto;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      text-align: left;
+    }
+
+    form h1 {
+      font-size: 24px;
+      font-weight: 500;
+      text-align: center;
+      margin-bottom: 28px;
+      margin-top: 0;
+    }
+
+    img {
+      width: 60px;
+    }
+
+    label {
+      font-size: 14px;
+      line-height: 1.5;
+      font-weight: 500;
+      display: block;
+      margin-bottom: 8px;
+      color: #eee;
+    }
+
+    .password-wrapper {
+      box-shadow: inset 0 0 0 1px hsl(220, 3%, 25%);
+      color: #eee;
+      border: none;
+      display: flex;
+      border-radius: calc(0.8rem - 2px);
+      margin-bottom: 16px;
+    }
+
+    .showhide-password {
+      border: none;
+      cursor: pointer;
+      color: white;
+      background-color: transparent;
+      padding: 0;
+      margin-right: 10px;
+    }
+
+    .password {
+      font-size: 24px;
+      line-height: 1.33333333;
+      background-color: transparent;
+      border: none;
+      width: 100%;
+      padding: 12px;
+      height: 40px;
+      color: inherit;
+      font-weight: 400;
+      letter-spacing: -2px;
+      margin: 0px;
+    }
+
+    .password.show-password {
+      letter-spacing: 0px;
+      font-size: 14px;
+    }
+
+    .password:focus {
+      outline: none;
+    }
+
+    .password-wrapper:has(.password:focus) {
+      box-shadow: inset 0 0 0 1px hsl(220, 3%, 25%), 0 0 0 2px #161718,
+        0 0 0 calc(2px + 2px) #cacbce;
+    }
+
+    .submit {
+      padding: 6px 10px;
+      border-radius: calc(0.8rem - 2px);
+      height: 40px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: center;
+      text-align: center;
+      font-weight: 500;
+      border: none;
+      color: white;
+      background: #007aff;
+      background-origin: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      cursor: pointer;
+      font-size: 14px;
+      transition: box-shadow 0.13s, opacity 0.2s;
+    }
+
+    .submit:focus {
+      box-shadow: inset 0px 0.8px 0px -0.25px rgba(255, 255, 255, 0.2),
+        0px 0.5px 1.5px rgba(54, 122, 246, 0.25),
+        0px 0px 0px 3.5px rgba(0, 122, 255, 0.5);
+      outline: 0;
+    }
+
+    .submit:disabled {
+      cursor: not-allowed;
+      opacity: 0.4;
+    }
+
+    p.bottom {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 24px;
+    }
+
+    p.bottom .poweredby {
+      margin-left: auto;
+    }
+
+    p.err {
+      color: #ffffff;
+      display: none;
+      margin: 0px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
+
+    a {
+      color: rgb(255, 255, 255);
+      opacity: 0.4;
+      font-size: 14px;
+      text-underline-offset: 2px;
+      text-decoration: none;
+    }
+
+    a:hover {
+      opacity: 1;
+      text-decoration: underline;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .logo img {
+      width: 45px;
+      height: 45px;
+      margin-bottom: 6px;
+    }
+
+    @font-face {
+      font-family: InterVariable;
+      src: url("./assets/InterVariable.woff2");
+    }
+  </style>
+</head>
+
+<body>
+  <h1>Welcome to Cap!</h1>
+  <div class="state-loading">
+    <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" alt="Loading..."
+      title="Loading...">
+      <style>
+        .spinner_ajPY {
+          transform-origin: center;
+          animation: spinner_AtaB 0.4s infinite linear;
+        }
+
+        @keyframes spinner_AtaB {
+          100% {
+            transform: rotate(360deg);
+          }
+        }
+      </style>
+      <path d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,19a8,8,0,1,1,8-8A8,8,0,0,1,12,20Z" opacity=".25"
+        fill="white" />
+      <path
+        d="M10.14,1.16a11,11,0,0,0-9,8.92A1.59,1.59,0,0,0,2.46,12,1.52,1.52,0,0,0,4.11,10.7a8,8,0,0,1,6.66-6.61A1.42,1.42,0,0,0,12,2.69h0A1.57,1.57,0,0,0,10.14,1.16Z"
+        class="spinner_ajPY" fill="white" />
+    </svg>
+  </div>
+</body>
+<script>
+  // let loading = false;
+  // document.querySelector("input").focus();
+  document
+    .addEventListener("DOMContentLoaded", async function (e) {
+        console.log('DOMContentLoaded');
+        const admin_key = '__AUTOLOGIN__';
+        const { success, session_token, hashed_token, expires } = await (
+          await fetch("/auth/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              admin_key,
+            }),
+          })
+        ).json();
+
+        if (success && session_token) {
+          localStorage.setItem(
+            "cap_auth",
+            JSON.stringify({
+              token: session_token,
+              expires: expires,
+              hash: hashed_token,
+            })
+          );
+          location.reload();
+          return;
+        }
+      }
+    );
+</script>
+
+</html>
