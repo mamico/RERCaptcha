@@ -62,6 +62,9 @@ new Elysia({
   })
   .use(staticPlugin())
   .get("/", async ({ cookie, headers }) => {
+    // DEBUG
+    console.log("Headers in arrivo:", JSON.stringify(headers, null, 2));
+
     return file(
       cookie.cap_authed?.value === "yes"
         ? "./public/index.html"
