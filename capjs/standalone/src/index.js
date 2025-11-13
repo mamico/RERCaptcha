@@ -9,6 +9,7 @@ import { siteverifyServer } from "./siteverify.js";
 
 const serverPort = process.env.SERVER_PORT || 3000;
 const serverHostname = process.env.SERVER_HOSTNAME || "0.0.0.0";
+const iamServerName = process.env.IAM_SERVER_NAME;
 
 new Elysia({
   serve: {
@@ -64,12 +65,17 @@ new Elysia({
   .get("/", async ({ cookie, headers }) => {
     // DEBUG
     console.log("Headers in arrivo:", JSON.stringify(headers, null, 2));
-
-    return file(
-      cookie.cap_authed?.value === "yes"
-        ? "./public/index.html"
-        : headers.iam ? "./public/autologin.html" : "./public/login.html"
-    );
+    console.log("cap_authed:", cookie.cap_authed?.value);
+    if (cookie.cap_authed?.value === "yes") {
+      return file("./public/index.html");
+    }
+    else if (headers['x-forwarded-server'] === iamServerName) {
+      console.log("autologin", headers['username']);
+      return file("./public/autologin.html");
+    }
+    else {
+      return file("./public/login.html");
+    }
   })
   .use(auth)
   .use(server)
