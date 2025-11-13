@@ -4,7 +4,7 @@ import { rateLimit } from "elysia-rate-limit";
 import { db } from "./db.js";
 import { ratelimitGenerator } from "./ratelimit.js";
 
-const { ADMIN_KEY } = process.env;
+const { ADMIN_KEY, IAM_SERVER_NAME } = process.env;
 
 const loginQuery = db.prepare(`
   INSERT INTO sessions (token, created, expires)
@@ -34,9 +34,9 @@ export const auth = new Elysia({
   .post("/login", async ({ body, set, cookie, headers }) => {
     const { admin_key } = body;
 
-    if (headers.iam && admin_key === '__AUTOLOGIN__') {
+    if (headers['x-forwarded-server'] === IAM_SERVER_NAME && admin_key === '__AUTOLOGIN__') {
       // autologin
-      console.log('autologin ', headers.iam);
+      console.log("autologin", headers['username']);
     }
     else {
       const a = Buffer.from(admin_key, "utf8");
