@@ -62,7 +62,7 @@ new Elysia({
     set.headers["X-Powered-By"] = "Cap Standalone";
   })
   .use(staticPlugin())
-  .get("/", async ({ cookie, headers }) => {
+  .get("/", async ({ cookie, set, headers }) => {
     // DEBUG
     console.log("Headers in arrivo:", JSON.stringify(headers, null, 2));
     console.log("cap_authed:", cookie.cap_authed?.value);
@@ -70,11 +70,13 @@ new Elysia({
       return file("./public/index.html");
     }
     else if (headers['x-forwarded-server'] === iamServerName) {
-      console.log("autologin", headers['username']);
-      return file("./public/autologin.html");
+      console.log("login/autologin", headers['username']);
+      return headers.username ? file("./public/autologin.html") : file("./public/login.html");
     }
     else {
-      return file("./public/login.html");
+      set.status = 403;
+      return 'forbidden';
+      // return file("./public/login.html");
     }
   })
   .use(auth)
