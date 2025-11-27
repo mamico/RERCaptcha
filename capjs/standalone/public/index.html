@@ -15,7 +15,7 @@
         <p>Standalone</p>
       </button>
       <button class="logout">Logout</button>
-      <button class="settings">
+      <button class="settings" aria-label="Settings">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="20"
@@ -71,7 +71,7 @@
 
     <div class="state-homepage" style="display: none">
       <div class="keys-top">
-        <input type="text" placeholder="Search keys…" class="search-input" />
+        <input type="text" id="searchKeys" placeholder="Search keys…" class="search-input" aria-label="Search keys"/>
         <button class="create-key">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -96,6 +96,7 @@
         href="https://github.com/tiagozip/cap"
         target="_blank"
         class="nano-github-button"
+        aria-label="https://github.com/tiagozip/cap"
       >
         <svg
           width="24"
@@ -135,7 +136,6 @@
       </button>
       <div class="topbar">
         <div class="left">
-          <h1></h1>
           <button title="Copy site key"></button>
         </div>
         <div class="right">
