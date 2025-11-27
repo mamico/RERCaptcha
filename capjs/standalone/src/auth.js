@@ -1,10 +1,12 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
+
 import { Elysia } from "elysia";
-import { rateLimit } from "elysia-rate-limit";
 import { db } from "./db.js";
+import { rateLimit } from "elysia-rate-limit";
 import { ratelimitGenerator } from "./ratelimit.js";
 
-const { ADMIN_KEY, IAM_SERVER_NAME } = process.env;
+const { ADMIN_KEY } = process.env;
+const [verifyHeaderName, verifyHeaderValue] = process.env.VERIFY_HEADER ? process.env.VERIFY_HEADER.split(':') : [null, null];
 
 const loginQuery = db.prepare(`
   INSERT INTO sessions (token, created, expires)
@@ -34,7 +36,7 @@ export const auth = new Elysia({
   .post("/login", async ({ body, set, cookie, headers }) => {
     const { admin_key } = body;
 
-    if (headers['x-forwarded-server'] === IAM_SERVER_NAME && admin_key === '__AUTOLOGIN__') {
+    if (verifyHeaderName && headers[verifyHeaderName] === verifyHeaderValue && admin_key === '__AUTOLOGIN__') {
       // autologin
       console.log("autologin", headers['username']);
     }

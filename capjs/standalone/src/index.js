@@ -1,15 +1,16 @@
-import { staticPlugin } from "@elysiajs/static";
-import { swagger } from "@elysiajs/swagger";
 import { Elysia, file } from "elysia";
+
 import { assetsServer } from "./assets.js";
 import { auth } from "./auth.js";
 import { capServer } from "./cap.js";
 import { server } from "./server.js";
 import { siteverifyServer } from "./siteverify.js";
+import { staticPlugin } from "@elysiajs/static";
+import { swagger } from "@elysiajs/swagger";
 
 const serverPort = process.env.SERVER_PORT || 3000;
 const serverHostname = process.env.SERVER_HOSTNAME || "0.0.0.0";
-const iamServerName = process.env.IAM_SERVER_NAME;
+const [verifyHeaderName, verifyHeaderValue] = process.env.VERIFY_HEADER ? process.env.VERIFY_HEADER.split(':') : [null, null];
 
 new Elysia({
   serve: {
@@ -69,7 +70,7 @@ new Elysia({
     if (cookie.cap_authed?.value === "yes") {
       return file("./public/index.html");
     }
-    else if (headers['x-forwarded-server'] === iamServerName) {
+    else if (verifyHeaderName && headers[verifyHeaderName] === verifyHeaderValue) {
       console.log("login/autologin", headers['username']);
       return headers.username ? file("./public/autologin.html") : file("./public/login.html");
     }
