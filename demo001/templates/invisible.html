@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% block title %}<title>RERCaptcha DEMO - invisibile</title>{% endblock %}
+
 {% block content %}
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
@@ -36,7 +38,7 @@
 </p>
 <div class="card">
   <div class="card-body">
-    <h5 class="card-title">Codice di esempio</h5>
+    <h3 class="card-title">Codice di esempio</h3>
     <p>
       Nel codice di esempio <strong>abcdef1234</strong> è la site_key del sito (informazione pubbblica),
       <strong>aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</strong> è il secret key, informazione che deve rimanere
@@ -46,7 +48,7 @@
 </div>
 <div class="card">
   <div class="card-body">
-    <h5 class="card-title">Client (esempio con HTML/Javascript)</h5>
+    <h3 class="card-title">Client (esempio con HTML/Javascript)</h3>
     <pre class="alert alert-light">
       <code>
 &lt;body&gt;
@@ -78,7 +80,7 @@
     </pre>
   </div>
   <div class="card-body">
-    <h5 class="card-title">Server (esempio in python/Flask)</h5>
+    <h3 class="card-title">Server (esempio in python/Flask)</h3>
     <pre class="alert alert-light">
       <code>
         response = request.form["token"]
