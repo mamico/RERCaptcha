@@ -12,6 +12,11 @@ CAPJS_PUBLIC_URL = os.environ.get("CAPJS_PUBLIC_URL", "http://localhost:3000")
 CAPJS_SITE_KEY = os.environ.get("SITE_KEY")
 CAPJS_SECRET = os.environ.get("SECRET_KEY")
 
+@app.after_request
+def apply_headers(response):
+    response.headers["X-Frame-Options"] = "DENY"
+    return response
+
 @app.route("/")
 def index():
     return render_template("index.html")
