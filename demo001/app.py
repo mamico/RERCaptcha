@@ -19,7 +19,7 @@ def apply_headers(response):
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    return render_template("index.html", capjs_public_url=CAPJS_PUBLIC_URL)
 
 @app.route("/visible-it", methods=["GET", "POST"])
 def visible_it():
