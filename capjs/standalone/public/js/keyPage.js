@@ -1,7 +1,7 @@
-import makeApiRequest from "./api.js";
-import initHomepage from "./homepage.js";
-import setState from "./state.js";
 import { createModal } from "./utils.js";
+import initHomepage from "./homepage.js";
+import makeApiRequest from "./api.js";
+import setState from "./state.js";
 
 let currentChart = null;
 let currentSiteKey = null;
@@ -33,7 +33,7 @@ export default async function loadKeyPage(siteKey) {
 function displayKeyData(data) {
   const { key } = data;
 
-  const titleElement = document.querySelector(".state-key-page .topbar h1");
+  const titleElement = document.querySelector(".state-key-page .topbar h2");
   titleElement.innerText = key.name;
 
   const configElement = document.querySelector(".state-key-page .config");
