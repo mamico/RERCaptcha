@@ -28,7 +28,7 @@ def configure_app_headers(app):
         # resp.headers["Content-Security-Policy"] = "script-src 'strict-dynamic'"
         # resp.headers["Content-Security-Policy"] = f"script-src {CAPJS_PUBLIC_URL}; script-src-elem "
         # resp.headers["Content-Security-Policy"] = "script-src ; script-src-elem "  
-        resp.headers["Content-Security-Policy"] = "script-src {CAPJS_PUBLIC_URL}"  
+        resp.headers["Content-Security-Policy"] = "script-src {CAPJS_PUBLIC_URL}; worker-src blob:"  
         csp_header = resp.headers.get('Content-Security-Policy')
         if csp_header and 'nonce' not in csp_header:
             resp.headers['Content-Security-Policy'] = \
