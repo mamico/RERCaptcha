@@ -30,6 +30,10 @@ export const server = new Elysia({
     ],
   },
 })
+  .onAfterHandle(({ set }) => {
+    set.headers["X-Content-Type-Options"] = "nosniff";
+    set.headers["Content-Security-Policy"] = "default-src 'self'";
+  })
   .use(
     rateLimit({
       scoping: "scoped",

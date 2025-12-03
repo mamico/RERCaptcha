@@ -15,6 +15,8 @@ CAPJS_SECRET = os.environ.get("SECRET_KEY")
 @app.after_request
 def apply_headers(response):
     response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff";
+    response.headers["Content-Security-Policy"] = "default-src 'self'";
     return response
 
 @app.route("/")
