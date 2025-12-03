@@ -5,7 +5,7 @@ export const createModal = (title, content) => {
   const modal = document.createElement("div");
   modal.classList.add("modal");
   modal.innerHTML = `
-    <div class="modal-content">
+    <div class="modal-content" role="dialog" aria-modal="true">
       <header>
         <h2>${title}</h2>
         <button class="close-button" title="Close"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg></button>
@@ -27,7 +27,7 @@ export const createModal = (title, content) => {
   });
 
   document.body.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") {
+    if (event.key === "Escape" && document.querySelector(".modal")) {
       document.body.removeChild(modal);
     }
   });

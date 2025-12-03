@@ -1,8 +1,8 @@
-import sendApiRequest from "./api.js";
+import { createModal } from "./utils.js";
 import initHomepage from "./homepage.js";
 import loadKeyPage from "./keyPage.js";
+import sendApiRequest from "./api.js";
 import setState from "./state.js";
-import { createModal } from "./utils.js";
 
 async function openCreateKey(namePrefill = "") {
   const modal = createModal(
@@ -62,7 +62,7 @@ async function openCreateKey(namePrefill = "") {
             <p class="small-text">Make sure to copy your secret key as it will not be shown again later.</p>
           </div>
 
-          <button class="open-key-button primary" style="margin-bottom:8px">Open key</button>
+          <button class="open-key-button primary" style="margin-bottom:8px" role="link">Open key</button>
           <button class="close-small-button primary secondary">Close</button>`
         );
 

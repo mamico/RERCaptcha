@@ -12,9 +12,10 @@
 <h2>Form con Captcha visibile e label in italiano</h2>
 <hr>
 {% if message %}
-<p class="alert alert-light">{{ message }}</p>
+<p class="alert alert-danger" role="alert" aria-live="assertive">{{ message }}</p>
 {% endif %}
 <form method="post">
+  <div class="mb-3">
   <cap-widget 
     id="cap" 
     data-cap-api-endpoint="{{ capjs_public_url }}/{{site_key}}/"
@@ -27,6 +28,8 @@
     data-cap-i18n-wasm-disabled="Abilita WASM per una risoluzione molto più veloce"
     data-cap-i18n-verified-aria-label="Verifica completata. Puoi proseguire"
   ></cap-widget>
+    <label for="cap" class="form-label">Campo obbligatorio</label>
+  </div>
   <div class="mb-3">
     <label for="text" class="form-label">Campo di testo</label>
     <input type="text" class="form-control" name="text" id="text">

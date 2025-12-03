@@ -731,7 +731,9 @@ nav .logout:hover {
   opacity: 0.2;
   text-decoration: none;
   width: fit-content;
-  transition: opacity 0.15s;
+  /* ACCESSIBILITY */
+  opacity: inherit;
+  /* transition: opacity 0.15s; */
   font-size: 14px;
   color: white;
   margin-top: 2em;
