@@ -19,7 +19,7 @@
     <script nonce="{{ request.csp_nonce }}">
       window.CAP_CUSTOM_WASM_URL = "{{ capjs_public_url }}/assets/cap_wasm.js";
     </script>
-    <script src="{{ capjs_public_url }}/assets/widget.js"></script>
+    <script nonce="{{ request.csp_nonce_cap }}" src="{{ capjs_public_url }}/assets/widget.js"></script>
     {% block script %}{% endblock %}
   </body>
 </html>

@@ -19,17 +19,23 @@ def configure_app_headers(app):
     def _make_nonce():
         if not getattr(request, 'csp_nonce', None):
             request.csp_nonce = get_random_urlsafe_string(18)
+        request.csp_nonce_cap = get_random_urlsafe_string(18)
         print(f"Nonce: {request.csp_nonce}")
     def _add_security_headers(resp):
         resp.headers["X-Frame-Options"] = "DENY"
         resp.headers["X-Content-Type-Options"] = "nosniff"
         # resp.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'strict-dynamic'"
         # resp.headers["Content-Security-Policy"] = "script-src 'strict-dynamic'"
-        resp.headers["Content-Security-Policy"] = f"script-src {CAPJS_PUBLIC_URL}"
+        # resp.headers["Content-Security-Policy"] = f"script-src {CAPJS_PUBLIC_URL}; script-src-elem "
+        # resp.headers["Content-Security-Policy"] = "script-src ; script-src-elem "  
+        resp.headers["Content-Security-Policy"] = "script-src {CAPJS_PUBLIC_URL}"  
         csp_header = resp.headers.get('Content-Security-Policy')
         if csp_header and 'nonce' not in csp_header:
             resp.headers['Content-Security-Policy'] = \
-                csp_header.replace('script-src', f"script-src 'nonce-{request.csp_nonce}'")
+                csp_header.replace('script-src ', f"script-src 'nonce-{request.csp_nonce}' 'nonce-{request.csp_nonce_cap}' ")
+            # csp_header = resp.headers.get('Content-Security-Policy')
+            # resp.headers['Content-Security-Policy'] = \
+            #     csp_header.replace('script-src-elem ', f"script-src-elem 'nonce-{request.csp_nonce}' ")
         return resp
     app.before_request(_make_nonce)
     app.after_request(_add_security_headers)
