@@ -33,7 +33,7 @@ export default async function loadKeyPage(siteKey) {
 function displayKeyData(data) {
   const { key } = data;
 
-  const titleElement = document.querySelector(".state-key-page .topbar h2");
+  const titleElement = document.querySelector(".state-key-page .topbar h1");
   titleElement.innerText = key.name;
 
   const configElement = document.querySelector(".state-key-page .config");
