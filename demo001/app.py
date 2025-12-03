@@ -2,7 +2,7 @@ import json
 from flask import Flask, render_template, request
 import requests
 import os
-import time
+import secrets
 
 app = Flask(__name__)
 
@@ -12,12 +12,30 @@ CAPJS_PUBLIC_URL = os.environ.get("CAPJS_PUBLIC_URL", "http://localhost:3000")
 CAPJS_SITE_KEY = os.environ.get("SITE_KEY")
 CAPJS_SECRET = os.environ.get("SECRET_KEY")
 
-@app.after_request
-def apply_headers(response):
-    response.headers["X-Frame-Options"] = "DENY"
-    response.headers["X-Content-Type-Options"] = "nosniff";
-    response.headers["Content-Security-Policy"] = "default-src 'self'";
-    return response
+def get_random_urlsafe_string(length):
+    return secrets.token_urlsafe(length)[:length]
+
+def configure_app_headers(app):
+    def _make_nonce():
+        if not getattr(request, 'csp_nonce', None):
+            request.csp_nonce = get_random_urlsafe_string(18)
+        print(f"Nonce: {request.csp_nonce}")
+    def _add_security_headers(resp):
+        resp.headers["X-Frame-Options"] = "DENY"
+        resp.headers["X-Content-Type-Options"] = "nosniff"
+        # resp.headers["Content-Security-Policy"] = "default-src 'self'; script-src 'strict-dynamic'"
+        # resp.headers["Content-Security-Policy"] = "script-src 'strict-dynamic'"
+        resp.headers["Content-Security-Policy"] = f"script-src {CAPJS_PUBLIC_URL}"
+        csp_header = resp.headers.get('Content-Security-Policy')
+        if csp_header and 'nonce' not in csp_header:
+            resp.headers['Content-Security-Policy'] = \
+                csp_header.replace('script-src', f"script-src 'nonce-{request.csp_nonce}'")
+        return resp
+    app.before_request(_make_nonce)
+    app.after_request(_add_security_headers)
+
+configure_app_headers(app)
+
 
 @app.route("/")
 def index():

@@ -107,7 +107,7 @@
 {% endblock %}
 
 {% block script %}
-<script>
+<script nonce="{{ request.csp_nonce }}">
   const cap = new Cap({ apiEndpoint: '{{ capjs_public_url }}/{{site_key}}/' });
   cap.solve().then(({ success, token }) => {
     if (success) {
