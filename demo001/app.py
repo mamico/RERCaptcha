@@ -45,7 +45,7 @@ def visible_it():
         if not token:
             # return "Errore: token mancante", 400
             message = "Errore: token mancante"
-            status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
+            # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
         else:
             res = requests.post(
                 f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
@@ -56,13 +56,13 @@ def visible_it():
                 result = res.json()
                 if result.get("success"):
                     message = f"Captcha OK ✅, campo di testo: {text}, token: {token}, captcha_result: {json.dumps(result)}"
-                    status_code = 200
+                    # status_code = 200
                 else:
                     message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
-                    status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
+                    # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
             else:
                 message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code} text: {res.text}"
-                status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
+                # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
     return render_template(
       "visible-it.html", 
@@ -83,7 +83,7 @@ def invisible():
         if not token:
             # return "Errore: token mancante", 400 (400 viene intercettato da LBL)
             message = "Errore: token mancante"
-            status_code = 404
+            # status_code = 404
         else:
             res = requests.post(
                 f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
@@ -94,13 +94,13 @@ def invisible():
                 result = res.json()
                 if result.get("success"):
                     message = f"Captcha OK ✅, campo di testo: {text}, token: {token}, captcha_result: {json.dumps(result)}"
-                    status_code = 200
+                    # status_code = 200
                 else:
                     message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
-                    status_code = 404
+                    # status_code = 404
             else:
                 message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code} text: {res.text}"
-                status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
+                # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
     return render_template(
       "invisible.html",
