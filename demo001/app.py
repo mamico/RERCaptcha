@@ -61,7 +61,7 @@ def visible_it():
                     message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
                     # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
             else:
-                message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code} text: {res.text}"
+                message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code}"
                 # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
     return render_template(
@@ -99,7 +99,7 @@ def invisible():
                     message = f"Captcha NON valido ❌: {result}, token: {token}, captcha_result: {json.dumps(result)}"
                     # status_code = 404
             else:
-                message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code} text: {res.text}"
+                message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code}"
                 # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
     return render_template(
