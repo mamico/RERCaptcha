@@ -1,7 +1,6 @@
-import sendApiRequest from "./api.js";
-
-import { openSettings } from "./settings.js";
 import { createModal } from "./utils.js";
+import { openSettings } from "./settings.js";
+import sendApiRequest from "./api.js";
 
 async function openCreateApiKey() {
   const modal = createModal(
@@ -14,6 +13,40 @@ async function openCreateApiKey() {
      <button class="create-key-button primary" disabled>Create API key</button>`
   );
   modal.querySelector(".key-name-input").focus();
+
+  const focus = [
+    {sel: ".key-name-input", focus: true},
+    {sel: ".create-key-button", focus: false},
+    {sel: ".close-button", focus: false},
+  ];
+  modal
+  .addEventListener("keydown", (event) => {
+    if (event.key === "Tab") {
+      event.preventDefault();
+      const curr = focus.findIndex((v) => v.focus);
+      const tabnext = (p, inc) => {
+        let n = (((p + inc) % focus.length) + focus.length) % focus.length;
+        while (p != n && modal.querySelector(focus[n].sel).disabled) {
+          n = (((n + inc) % focus.length) + focus.length) % focus.length;
+        }
+        return n;
+      };
+      if (event.shiftKey) {
+        focus[curr].focus = false;
+        let n = tabnext(curr, -1);
+        console.log(`change focus to from ${curr} to ${n}`)
+        focus[n].focus = true;
+        modal.querySelector(focus[n].sel).focus();
+      }
+      else {
+        focus[curr].focus = false;
+        let n = tabnext(curr, 1)
+        console.log(`change focus to from ${curr} to ${n}`)
+        focus[n].focus = true;
+        modal.querySelector(focus[n].sel).focus();
+      }
+    }
+  });
 
   modal.querySelector(".key-name-input").addEventListener("input", (event) => {
     modal.querySelector(".create-key-button").disabled =

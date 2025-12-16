@@ -11,6 +11,7 @@ import { swagger } from "@elysiajs/swagger";
 const serverPort = process.env.SERVER_PORT || 3000;
 const serverHostname = process.env.SERVER_HOSTNAME || "0.0.0.0";
 const [verifyHeaderName, verifyHeaderValue] = process.env.VERIFY_HEADER ? process.env.VERIFY_HEADER.split(':') : [null, null];
+const loginPageEnabled = process.env.LOGIN_PAGE_ENABLED === 'true';
 
 new Elysia({
   serve: {
@@ -74,10 +75,12 @@ new Elysia({
       console.log("login/autologin", headers['username']);
       return headers.username ? file("./public/autologin.html") : file("./public/login.html");
     }
+    else if (loginPageEnabled) {
+      return file("./public/login.html");
+    }
     else {
       set.status = 403;
       return 'forbidden';
-      // return file("./public/login.html");
     }
   })
   .use(auth)

@@ -17,6 +17,7 @@ services:
       ADMIN_KEY: your_secret_password_your_secret_password
       ENABLE_ASSETS_SERVER: true
       CORS_ORIGIN: "*"
+      LOGIN_PAGE_ENABLED: true
 
   capjs-nginx:
     build: capjs-nginx
