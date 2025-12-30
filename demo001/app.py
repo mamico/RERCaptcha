@@ -1,8 +1,9 @@
 import json
-from flask import Flask, render_template, request
-import requests
 import os
 import secrets
+
+import requests
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
@@ -12,20 +13,50 @@ CAPJS_PUBLIC_URL = os.environ.get("CAPJS_PUBLIC_URL", "http://localhost:3000")
 CAPJS_SITE_KEY = os.environ.get("SITE_KEY")
 CAPJS_SECRET = os.environ.get("SECRET_KEY")
 
+
 def get_random_urlsafe_string(length):
     return secrets.token_urlsafe(length)[:length]
 
+
 def configure_app_headers(app):
     def _make_nonce():
-        if not getattr(request, 'csp_nonce', None):
+        if not getattr(request, "csp_nonce", None):
             request.csp_nonce = get_random_urlsafe_string(18)
-    def _add_security_headers(resp):
-        resp.headers["X-Frame-Options"] = "DENY"
-        resp.headers["X-Content-Type-Options"] = "nosniff"
-        resp.headers["Content-Security-Policy"] = f"script-src 'nonce-{request.csp_nonce}' {CAPJS_PUBLIC_URL} 'wasm-unsafe-eval'; worker-src blob:"  
-        return resp
+
+    def _add_security_headers(response):
+        # Content Security Policy (Configurazione base: permette solo risorse dal proprio dominio)
+        response.headers["Content-Security-Policy"] = (
+            f"script-src 'nonce-{request.csp_nonce}' {CAPJS_PUBLIC_URL} 'wasm-unsafe-eval'; worker-src blob:"
+        )
+        # Impedisce l'inserimento del sito in iframe (Previene Clickjacking)
+        response.headers["X-Frame-Options"] = "DENY"
+        # Gestione della cache (Evita che dati sensibili vengano salvati localmente)
+        response.headers["Cache-Control"] = (
+            "no-store, no-cache, must-revalidate, max-age=0"
+        )
+        # Forza l'uso di HTTPS (HSTS) - Valido per 1 anno
+        # abiltato solo negli ambienti di produzione
+        if CAPJS_PUBLIC_URL.startswith("https"):
+            response.headers["Strict-Transport-Security"] = (
+                "max-age=31536000; includeSubDomains"
+            )
+        # Impedisce al browser di indovinare il MIME type (Previene Sniffing)
+        response.headers["X-Content-Type-Options"] = "nosniff"
+        # Controlla quante informazioni inviare nel referer
+        response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+        # Limita l'accesso a API del browser (es. Camera, Microfono)
+        response.headers["Permissions-Policy"] = (
+            "geolocation=(), camera=(), microphone=()"
+        )
+        # Header per l'isolamento Cross-Origin (COOP, COEP, CORP)
+        response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        return response
+
     app.before_request(_make_nonce)
     app.after_request(_add_security_headers)
+
 
 configure_app_headers(app)
 
@@ -33,6 +64,7 @@ configure_app_headers(app)
 @app.route("/")
 def index():
     return render_template("index.html", capjs_public_url=CAPJS_PUBLIC_URL)
+
 
 @app.route("/visible-it", methods=["GET", "POST"])
 def visible_it():
@@ -50,7 +82,7 @@ def visible_it():
             res = requests.post(
                 f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
                 data={"secret": CAPJS_SECRET, "response": token},
-                timeout=5
+                timeout=5,
             )
             if res:
                 result = res.json()
@@ -64,12 +96,15 @@ def visible_it():
                 message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code}"
                 # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
-    return render_template(
-      "visible-it.html", 
-      capjs_public_url=CAPJS_PUBLIC_URL, 
-      site_key=CAPJS_SITE_KEY,
-      message=message,
-    ), status_code
+    return (
+        render_template(
+            "visible-it.html",
+            capjs_public_url=CAPJS_PUBLIC_URL,
+            site_key=CAPJS_SITE_KEY,
+            message=message,
+        ),
+        status_code,
+    )
 
 
 @app.route("/invisible", methods=["GET", "POST"])
@@ -88,7 +123,7 @@ def invisible():
             res = requests.post(
                 f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
                 data={"secret": CAPJS_SECRET, "response": token},
-                timeout=5
+                timeout=5,
             )
             if res:
                 result = res.json()
@@ -102,14 +137,16 @@ def invisible():
                 message = f"Errore non previsto nella verifica del token: {token} status: {res.status_code}"
                 # status_code = 404  # altri errrori vengonoinetercettati da LBL res.status_code
 
-    return render_template(
-      "invisible.html",
-      capjs_public_url=CAPJS_PUBLIC_URL,
-      site_key=CAPJS_SITE_KEY,
-      message=message,
-    ), status_code
+    return (
+        render_template(
+            "invisible.html",
+            capjs_public_url=CAPJS_PUBLIC_URL,
+            site_key=CAPJS_SITE_KEY,
+            message=message,
+        ),
+        status_code,
+    )
 
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
-
