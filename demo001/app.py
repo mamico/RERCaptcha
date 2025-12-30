@@ -49,9 +49,9 @@ def configure_app_headers(app):
             "geolocation=(), camera=(), microphone=()"
         )
         # Header per l'isolamento Cross-Origin (COOP, COEP, CORP)
-        response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
-        response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
-        response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
+        # response.headers["Cross-Origin-Embedder-Policy"] = "require-corp"
+        # response.headers["Cross-Origin-Resource-Policy"] = "same-origin"
+        # response.headers["Cross-Origin-Opener-Policy"] = "same-origin"
         return response
 
     app.before_request(_make_nonce)
