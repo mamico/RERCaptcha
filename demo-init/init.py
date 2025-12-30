@@ -39,7 +39,9 @@ else:
     config = json.dumps({
         "difficulty": 4,
         "challengeCount": 50,
-        "saltSize": 32
+        "saltSize": 32,
+        "expiresMS": 60000,
+        "tokenTTL": 120000,
     })
 
     cur.execute(

@@ -1,37 +1,9 @@
 import Cap from "@cap.js/server";
-import { cors } from "@elysiajs/cors";
 import { Elysia } from "elysia";
-import { rateLimit } from "elysia-rate-limit";
-
+import { cors } from "@elysiajs/cors";
 import { db } from "./db.js";
+import { rateLimit } from "elysia-rate-limit";
 import { ratelimitGenerator } from "./ratelimit.js";
-
-const getSitekeyConfigQuery = db.prepare(
-	`SELECT (config) FROM keys WHERE siteKey = ?`,
-);
-
-const insertChallengeQuery = db.prepare(`
-  INSERT INTO challenges (siteKey, token, data, expires)
-  VALUES (?, ?, ?, ?)
-`);
-const getChallengeQuery = db.prepare(`
-  SELECT * FROM challenges WHERE siteKey = ? AND token = ?
-`);
-const deleteChallengeQuery = db.prepare(`
-  DELETE FROM challenges WHERE siteKey = ? AND token = ?
-`);
-
-const insertTokenQuery = db.prepare(`
-  INSERT INTO tokens (siteKey, token, expires)
-  VALUES (?, ?, ?)
-`);
-
-const upsertSolutionQuery = db.prepare(`
-  INSERT INTO solutions (siteKey, bucket, count)
-  VALUES (?, ?, 1)
-  ON CONFLICT (siteKey, bucket)
-  DO UPDATE SET count = count + 1
-`);
 
 export const capServer = new Elysia({
 	detail: {
@@ -56,7 +28,7 @@ export const capServer = new Elysia({
 		const cap = new Cap({
 			noFSState: true,
 		});
-		const _keyConfig = await getSitekeyConfigQuery.get(params.siteKey);
+		const [_keyConfig] = await db`SELECT (config) FROM keys WHERE siteKey = ${params.siteKey}`;
 
 		if (!_keyConfig) {
 			set.status = 404;
@@ -69,22 +41,30 @@ export const capServer = new Elysia({
 			challengeCount: keyConfig.challengeCount,
 			challengeSize: keyConfig.saltSize,
 			challengeDifficulty: keyConfig.difficulty,
+			expiresMs: keyConfig.expiresMS || 600000,
 		});
 
-		insertChallengeQuery.run(
-			params.siteKey,
-			challenge.token,
-			Object.values(challenge.challenge).join(","),
-			challenge.expires,
-		);
+		await db`
+			INSERT INTO challenges (siteKey, token, data, expires)
+			VALUES (${params.siteKey}, ${challenge.token}, ${Object.values(challenge.challenge).join(",")}, ${challenge.expires})
+		`;
 
 		return challenge;
 	})
 	.post("/:siteKey/redeem", async ({ body, set, params }) => {
-		const challenge = await getChallengeQuery.get(params.siteKey, body.token);
+		const [_keyConfig] = await db`SELECT (config) FROM keys WHERE siteKey = ${params.siteKey}`;
+
+		if (!_keyConfig) {
+			set.status = 404;
+			return { error: "Invalid site key or secret" };
+		}
+
+		const [challenge] = await db`
+			SELECT * FROM challenges WHERE siteKey = ${params.siteKey} AND token = ${body.token}
+		`;
 
 		try {
-			deleteChallengeQuery.run(params.siteKey, body.token);
+			await db`DELETE FROM challenges WHERE siteKey = ${params.siteKey} AND token = ${body.token}`;
 		} catch {
 			set.status = 404;
 			return { error: "Challenge not found" };
@@ -94,6 +74,8 @@ export const capServer = new Elysia({
 			set.status = 404;
 			return { error: "Challenge not found" };
 		}
+
+		const keyConfig = JSON.parse(_keyConfig.config);
 
 		const cap = new Cap({
 			noFSState: true,
@@ -112,21 +94,32 @@ export const capServer = new Elysia({
 		});
 
 		const { success, token, expires } = await cap.redeemChallenge(body);
+		// TODO: evaluate to have different token ttl than challenge ttl
+		const expires_custom = Date.now() + (keyConfig.tokenTTL || 20 * 60 * 1000);
 
 		if (!success) {
 			set.status = 403;
 			return { error: "Invalid solution" };
 		}
 
-		insertTokenQuery.run(params.siteKey, token, expires);
+		// console.log("Redeemed challenge, issuing token:", token, expires, expires_custom, expires === expires_custom);
+		await db`
+			INSERT INTO tokens (siteKey, token, expires)
+			VALUES (${params.siteKey}, ${token}, ${expires_custom})
+		`;
 
 		const now = Math.floor(Date.now() / 1000);
 		const hourlyBucket = Math.floor(now / 3600) * 3600;
-		upsertSolutionQuery.run(params.siteKey, hourlyBucket);
+		await db`
+			INSERT INTO solutions (siteKey, bucket, count)
+			VALUES (${params.siteKey}, ${hourlyBucket}, 1)
+			ON CONFLICT (siteKey, bucket)
+			DO UPDATE SET count = count + 1
+		`;
 
 		return {
 			success: true,
 			token,
-			expires,
+			expires: expires_custom,
 		};
 	});

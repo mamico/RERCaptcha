@@ -1,6 +1,6 @@
 {
   "name": "cap-standalone",
-  "version": "2.0.16",
+  "version": "2.0.18",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "bun run --watch src/index.js",
@@ -45,11 +45,10 @@
     "turing-test"
   ],
   "dependencies": {
-    "@cap.js/server": "^4.0.3",
+    "@cap.js/server": "^4.0.5",
     "@elysiajs/cors": "^1.4.0",
     "@elysiajs/static": "^1.4.4",
     "@elysiajs/swagger": "^1.3.1",
-    "@tursodatabase/database": "^0.2.2",
     "elysia": "^1.4.12",
     "elysia-rate-limit": "4.4.0"
   },

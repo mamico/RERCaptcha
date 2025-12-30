@@ -42,6 +42,10 @@ function displayKeyData(data) {
   configElement.querySelector("#challengeCount").value =
     key.config.challengeCount;
   configElement.querySelector("#saltSize").value = key.config.saltSize;
+  configElement.querySelector("#expiresMS").value =
+    key.config.expiresMS || 600000;
+  configElement.querySelector("#tokenTTL").value =
+    key.config.tokenTTL || 1200000;
 
   configElement.querySelector("button").onclick = async () => {
     const name = configElement.querySelector("#keyName").value.trim();
@@ -57,12 +61,22 @@ function displayKeyData(data) {
       configElement.querySelector("#saltSize").value,
       10
     );
+    const expiresMS = parseInt(
+      configElement.querySelector("#expiresMS").value,
+      10
+    );
+    const tokenTTL = parseInt(
+      configElement.querySelector("#tokenTTL").value,
+      10
+    );
 
     if (
       !name ||
       Number.isNaN(difficulty) ||
       Number.isNaN(challengeCount) ||
-      Number.isNaN(saltSize)
+      Number.isNaN(saltSize) ||
+      Number.isNaN(expiresMS) ||
+      Number.isNaN(tokenTTL)
     ) {
       createModal(
         "Error",
@@ -92,7 +106,9 @@ function displayKeyData(data) {
         name,
         difficulty,
         challengeCount,
+        expiresMS,
         saltSize,
+        tokenTTL,
       }
     );
 

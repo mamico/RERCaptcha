@@ -55,11 +55,15 @@ def form():
             return "Errore: token mancante", 400
 
         resp = requests.post(
-            f"{CAPJS_INTERNAL_URL}/verify",
+            f"{CAPJS_INTERNAL_URL}/{CAPJS_SITE_KEY}/siteverify",
             data={"secret": CAPJS_SECRET, "response": token},
             timeout=5
         )
-        result = resp.json()
+        try:
+            result = resp.json()
+        except:
+            import logging; logging.exception("%s %s, %s", resp.url, {"secret": CAPJS_SECRET, "response": token}, resp.text)
+            result = {}
         if result.get("success"):
             return f"Captcha OK ✅, utente: {username}"
         return f"Captcha NON valido ❌: {result}"
