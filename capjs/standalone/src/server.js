@@ -309,7 +309,7 @@ export const server = new Elysia({
         return { success: false, error: "Key not found" };
       }
 
-      const { name, difficulty, challengeCount, saltSize, expiresMS } = body;
+      const { name, difficulty, challengeCount, saltSize, tokenTTL, expiresMS } = body;
       const config = {
         ...keyDefaults,
         name,
