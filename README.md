@@ -78,8 +78,4 @@ Visita `http://localhost:5001` per vedere il captcha in azione.
 
 ## Crediti e Licenza
 
-RER Captcha si basa sull'ottimo lavoro di [CapJS](https://github.com/tiagozip/cap).
-
-Questo progetto è distribuito sotto licenza **Apache-2.0**. Consulta il file `LICENSE` per i dettagli (se presente) o il repository originale.
-
-Copyright ©2025 - present tiago
+RER Captcha si basa su [CapJS](https://github.com/tiagozip/cap) distribuito sotto licenza **Apache-2.0**.  Copyright ©2025 - present tiago.
