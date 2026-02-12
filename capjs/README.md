@@ -28,7 +28,6 @@ Verifica se un token inviato dal client è valido.
 Il servizio può essere configurato tramite variabili d'ambiente:
 
 - `PORT`: Porta su cui il servizio ascolta (default: `3000`).
-- `DATABASE_URL`: URL per la connessione al database (se applicabile).
 
 ## Deployment
 

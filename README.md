@@ -75,3 +75,11 @@ Visita `http://localhost:5001` per vedere il captcha in azione.
 
 - [Documentazione Servizio CapJS](file:///home/mauro/Work/RER/rercaptcha/capjs/README.md)
 - [Documentazione Demo Flask](file:///home/mauro/Work/RER/rercaptcha/demo001/README.md)
+
+## Crediti e Licenza
+
+RER Captcha si basa sull'ottimo lavoro di [CapJS](https://github.com/tiagozip/cap).
+
+Questo progetto è distribuito sotto licenza **Apache-2.0**. Consulta il file `LICENSE` per i dettagli (se presente) o il repository originale.
+
+Copyright ©2025 - present tiago
