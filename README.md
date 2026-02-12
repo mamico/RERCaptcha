@@ -1,69 +1,77 @@
 # RER Captcha
 
-Questo progetto contiene un'implementazione di un servizio di captcha "CapJS" e un'applicazione di demo per mostrare come integrarlo.
+RER Captcha è una soluzione di protezione captcha basata sul framework open-source **CapJS**. Questo repository contiene il servizio core e un'applicazione di esempio per facilitare l'integrazione.
 
-## Demo 001
+## Architettura
 
-`demo001` è un'applicazione web minimale in Python/Flask che mostra come integrare il servizio CapJS in un form HTML.
+Il progetto è composto da due componenti principali:
 
-### Funzionamento
+1.  **[capjs](file:///home/mauro/Work/RER/rercaptcha/capjs/README.md)**: Il servizio core che genera e verifica i captcha.
+2.  **[demo001](file:///home/mauro/Work/RER/rercaptcha/demo001/README.md)**: Un'applicazione web Python/Flask che mostra come integrare CapJS in un form reale.
 
-L'applicazione `demo001` renderizza una pagina HTML con un form. Il form include il widget CapJS che, una volta risolto, inserisce un token in un campo nascosto. Quando il form viene inviato, il server Flask riceve il token e lo verifica chiamando l'endpoint `/verify` del servizio `capjs`.
+I servizi sono orchestrati tramite Docker Compose per semplificare lo sviluppo e il deployment locale.
 
-### Come eseguire i test
+## Guida alla Configurazione Rapida
 
-Per eseguire `demo001` è necessario aggiungerlo al file `compose.yml` e poi avviare i servizi con `docker-compose`.
+Segui questi passaggi per avviare il sistema e testare la demo.
 
-1.  **Aggiungere il servizio `demo001` a `compose.yml`:**
+### 1. Requisiti
 
-    Aggiungere la seguente definizione di servizio al file `compose.yml`:
+- Docker
+- Docker Compose
 
-    ```yaml
-    services:
-      # ... (altri servizi come capjs, demo, demo-init)
+### 2. Inizializzazione delle Chiavi
 
-      demo001:
-        build: ./demo001
-        ports:
-          - "5001:5000"
-        environment:
-          # Queste variabili devono essere impostate con i valori generati
-          # durante l'inizializzazione del servizio capjs.
-          SITE_KEY: "your_site_key"  # Sostituire con la SITE_KEY
-          SECRET_KEY: "your_secret_key" # Sostituire con la SECRET_KEY
-        depends_on:
-          - capjs
-    ```
+CapJS richiede una coppia di chiavi (`SITE_KEY` e `SECRET_KEY`) per funzionare. Queste vengono generate automaticamente al primo avvio.
 
-2.  **Ottenere `SITE_KEY` e `SECRET_KEY`:**
+```bash
+# Avvia il core e il tool di inizializzazione
+docker-compose up -d capjs demo-init
+```
 
-    Queste chiavi sono generate dal servizio `capjs`. Per ottenerle, è necessario prima avviare `capjs` e `demo-init` e poi leggere i valori dal file `shared/site.json` che viene creato.
+Attendi qualche secondo, quindi recupera le chiavi generate:
 
-    ```bash
-    docker-compose up -d capjs demo-init
-    # Attendere qualche secondo per l'inizializzazione
-    cat shared/site.json
-    ```
+```bash
+cat shared/site.json
+```
 
-    Il file `site.json` conterrà un output simile a questo:
+L'output sarà simile a questo:
 
-    ```json
-    {
-        "site_key": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-        "secret_key": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
-    }
-    ```
+```json
+{
+  "site_key": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "secret_key": "yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy"
+}
+```
 
-3.  **Aggiornare `compose.yml`:**
+### 3. Configurazione della Demo
 
-    Sostituire `"your_site_key"` e `"your_secret_key"` nel servizio `demo001` in `compose.yml` con i valori ottenuti dal passo precedente.
+Aggiorna il file `compose.yml` (o crea un file `.env` se supportato) con le chiavi ottenute.
 
-4.  **Avviare `demo001`:**
+```yaml
+services:
+  demo001:
+    build: ./demo001
+    ports:
+      - "5001:5000"
+    environment:
+      SITE_KEY: "LA_TUA_SITE_KEY"
+      SECRET_KEY: "LA_TUA_SECRET_KEY"
+    depends_on:
+      - capjs
+```
 
-    ```bash
-    docker-compose up -d demo001
-    ```
+### 4. Avvio della Demo
 
-5.  **Accedere all'applicazione:**
+```bash
+docker-compose up -d demo001
+```
 
-    Aprire il browser e visitare `http://localhost:5001`. Verrà visualizzato il form con il captcha.
+### 5. Accesso
+
+Visita `http://localhost:5001` per vedere il captcha in azione.
+
+## Documentazione Componenti
+
+- [Documentazione Servizio CapJS](file:///home/mauro/Work/RER/rercaptcha/capjs/README.md)
+- [Documentazione Demo Flask](file:///home/mauro/Work/RER/rercaptcha/demo001/README.md)
