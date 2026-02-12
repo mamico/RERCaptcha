@@ -6,14 +6,12 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      # monta directory locale dell’host per i dati sqlite
-      # - ./data:/usr/src/app/.data
       - ./data:/data
       # opzionale: montare config dall’host
       # - ./etc/cap.config.js:/app/cap.config.js:ro
     environment:
       DATA_PATH: /data
-      # TODO: quuesto solo per demo, in produzione spostare su un secret/vault
+      # in produzione spostare su un secret/vault
       ADMIN_KEY: your_secret_password_your_secret_password
       WIDGET_VERSION: 0.1.33
       WASM_VERSION: 0.0.6
@@ -21,19 +19,6 @@ services:
       CORS_ORIGIN: "*"
       LOGIN_PAGE_ENABLED: true
       HIDE_RATELIMIT_IP_WARNING: true
-
-  #capjs-nginx:
-  #  build: capjs-nginx
-  #  ports:
-  #    - "3000:80"
-  #  environment:
-  #    DATA_PATH: /data
-  #    # TODO: quuesto solo per demo, in produzione spostare su un secret/vault
-  #    ADMIN_KEY: your_secret_password_your_secret_password
-  #    ENABLE_ASSETS_SERVER: true
-  #    CORS_ORIGIN: "*"
-  #  volumes:
-  #    - ./data:/data
 
   demo:
     build: ./demo
@@ -54,5 +39,3 @@ services:
     restart: "no"
     depends_on:
       - capjs
-    # environment:
-    #   ADMIN_KEY: your_secret_password_your_secret_password
